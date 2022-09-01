@@ -2,4 +2,5 @@
 Some tools for simple biomedical informatics problems
 
 1. mapping terms to CUIs
-`bash run.sh`
+
+`cd map2cui`, `bash run.sh`
