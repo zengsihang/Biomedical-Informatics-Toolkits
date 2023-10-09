@@ -3,6 +3,7 @@ import torch
 import numpy as np
 import argparse
 from transformers import AutoTokenizer, AutoModel
+import pandas as pd
 
 def get_bert_embed(phrase_list, m, tok, device, normalize=True, \
         summary_method="CLS", batch_size=64):
@@ -47,7 +48,7 @@ def get_bert_embed(phrase_list, m, tok, device, normalize=True, \
                 embed_norm = torch.norm(
                     embed, p=2, dim=1, keepdim=True).clamp(min=1e-12)
                 embed = embed / embed_norm
-            if now_count % 1000000 == 0:
+            if now_count % 1000000 < batch_size:
                 if now_count != 0:
                     output_list.append(output.cpu().numpy())
                 output = embed
@@ -72,7 +73,13 @@ def run(args):
     if args.output_mode == 'npy':
         np.save(args.output_file, embed)
     elif args.output_mode == 'csv':
-        np.savetxt(args.output_file, embed, delimiter=',')
+        # phrase list in the first column
+        embed = np.concatenate((np.array(phrase_list).reshape(-1, 1), embed), axis=1)
+        header = ['phrase'] + ['dim' + str(i) for i in range(embed.shape[1]-1)]
+        # make it a pd dataframe
+        embed = pd.DataFrame(embed)
+        # write to csv
+        embed.to_csv(args.output_file, index=False, header=header)
     else:
         raise ValueError('output mode not supported')
     return None
