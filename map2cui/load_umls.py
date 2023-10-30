@@ -10,8 +10,8 @@ import os
 # # args
 # args = parser.parse_args()
 
-def load_umls(args):
-    with open(os.path.join(args.umls_dir, 'MRCONSO.RRF'), 'r') as f:
+def load_umls(umls_dir):
+    with open(os.path.join(umls_dir, 'MRCONSO.RRF'), 'r') as f:
         lines = f.readlines()
     print(len(lines))
 
