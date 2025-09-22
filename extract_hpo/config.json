@@ -1,0 +1,5 @@
+{
+    "api_url": "https://doc2hpo.wglab.org/parse/acdat",
+    "negex": true,
+    "timeout": 30
+}
